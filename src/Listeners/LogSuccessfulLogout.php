@@ -5,6 +5,7 @@ namespace Yadahan\AuthenticationLog\Listeners;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Jenssegers\Agent\Agent;
 use Yadahan\AuthenticationLog\AuthenticationLog;
 
 class LogSuccessfulLogout
@@ -19,7 +20,7 @@ class LogSuccessfulLogout
     /**
      * Create the event listener.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return void
      */
     public function __construct(Request $request)
@@ -30,27 +31,37 @@ class LogSuccessfulLogout
     /**
      * Handle the event.
      *
-     * @param  Logout  $event
+     * @param Logout $event
      * @return void
      */
     public function handle(Logout $event)
     {
-        if ($event->user) {
-            $user = $event->user;
-            $ip = $this->request->ip();
-            $userAgent = $this->request->userAgent();
-            $authenticationLog = $user->authentications()->whereIpAddress($ip)->whereUserAgent($userAgent)->first();
+        if (!$event->user)
+            return;
 
-            if (! $authenticationLog) {
-                $authenticationLog = new AuthenticationLog([
-                    'ip_address' => $ip,
-                    'user_agent' => $userAgent,
-                ]);
-            }
+        $user = $event->user;
+        $ip = $this->request->ip();
 
-            $authenticationLog->logout_at = Carbon::now();
+        $agent = new Agent();
 
-            $user->authentications()->save($authenticationLog);
+        $authenticationLog = $user
+            ->authentications()
+            ->whereIpAddress($ip)
+            ->whereRawUserAgent($agent->getUserAgent())
+            ->first();
+
+        if (!$authenticationLog) {
+            $authenticationLog = new AuthenticationLog([
+                'ip_address' => $ip,
+                'raw_user_agent' => $agent->getUserAgent(),
+                'device' => $agent->deviceType(),
+                'browser' => $agent->browser(),
+                'platform' => $agent->platform()
+            ]);
         }
+
+        $authenticationLog->logout_at = Carbon::now();
+
+        $user->authentications()->save($authenticationLog);
     }
 }

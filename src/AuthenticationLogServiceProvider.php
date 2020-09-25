@@ -24,6 +24,8 @@ class AuthenticationLogServiceProvider extends ServiceProvider
 
         $this->mergeConfigFrom(__DIR__.'/../config/authentication-log.php', 'authentication-log');
 
+        $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
+
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__.'/../database/migrations' => database_path('migrations'),
@@ -47,6 +49,7 @@ class AuthenticationLogServiceProvider extends ServiceProvider
      * Register the Authentication Log's events.
      *
      * @return void
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     protected function registerEvents()
     {

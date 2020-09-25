@@ -13,7 +13,14 @@ return [
     |
     */
 
-    'subject' => 'Login from a new device',
-    'content' => 'Your :app account logged in from a new device.',
+    'subject' => 'Dodat novi uređaj',
+    'content' => 'Vašem :app nalogu je pristupljeno sa novog uređaja.',
 
+    'hello' => 'Zdravo!',
+    'account' => 'Nalog',
+    'time' => 'Vrijeme',
+    'ipaddress' => 'IP Adresa',
+    'browser' => 'Pretraživač',
+    'warning' => 'Ako ste ovo bili vi, možete ignorisati ovo upozorenje. Ako smatrate da je ovaj pristup sumnjiv, molimo vas da izmijenite šifru.',
+    'regards' => 'Sve najbolje,'
 ];

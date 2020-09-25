@@ -37,11 +37,20 @@ class AuthenticationLog extends Model
         'logout_at' => 'datetime',
     ];
 
+    protected $appends = [
+        'user_agent'
+    ];
+
     /**
      * Get the authenticatable entity that the authentication log belongs to.
      */
     public function authenticatable()
     {
         return $this->morphTo();
+    }
+
+    public function getUserAgentAttribute()
+    {
+        return $this->browser . ' on ' . $this->platform;
     }
 }

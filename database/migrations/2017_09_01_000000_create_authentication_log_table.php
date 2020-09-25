@@ -17,7 +17,10 @@ class CreateAuthenticationLogTable extends Migration
             $table->bigIncrements('id');
             $table->morphs('authenticatable');
             $table->string('ip_address', 45)->nullable();
-            $table->text('user_agent')->nullable();
+            $table->string('raw_user_agent')->nullable();
+            $table->string('device')->nullable();
+            $table->string('browser')->nullable();
+            $table->string('platform')->nullable();
             $table->timestamp('login_at')->nullable();
             $table->timestamp('logout_at')->nullable();
         });
